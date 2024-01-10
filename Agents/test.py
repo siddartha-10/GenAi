@@ -1,15 +1,11 @@
 from langchain.agents import load_tools
+from langchain.chat_models import ChatOpenAI
 import os
-from dotenv import load_dotenv
-load_dotenv()
-import streamlit as st
-import os
-import google.generativeai as genai
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import PromptTemplate
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-model = ChatGoogleGenerativeAI(model="gemini-pro")
+from crewai import Agent, Task, Crew, Process
 
+os.environ["OPENAI_API_KEY"] = ""
+
+llm = ChatOpenAI(temperature=0.0,model="gpt-3.5-turbo")
 tools = load_tools(
     ["human"]
 )

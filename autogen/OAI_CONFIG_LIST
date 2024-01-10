@@ -1,0 +1,9 @@
+[
+    {
+        "model": "gpt-4-32k",
+        "api_key": "d9c64f100c4e4da49252d78a25ff7b9d",
+        "base_url": "https://gpt-4-trails.openai.azure.com/",
+        "api_type": "azure",
+        "api_version": "2024-07-01-preview"
+    }
+]
