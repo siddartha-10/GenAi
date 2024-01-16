@@ -61,6 +61,12 @@ import os
 from dotenv import load_dotenv
 from crewai import Crew, Process
 from langchain_openai import AzureChatOpenAI
+from crewai.agent import Agent
+from crewai.tools.agent_tools import AgentTools
+from langchain_experimental.agents import create_pandas_dataframe_agent
+import pandas as pd
+from langchain.schema import HumanMessage
+
 
 load_dotenv()
 
@@ -71,29 +77,9 @@ default_llm = AzureChatOpenAI(
     api_key=os.environ.get("AZURE_OPENAI_KEY")
 )
 
-
-# Create a researcher agent
-researcher = Agent(
-  role='Senior Researcher',
-  goal='Discover groundbreaking technologies',
-  verbose=True,
-  llm=default_llm,
-  backstory='A curious mind fascinated by cutting-edge innovation and the potential to change the world, you know everything about tech.'
+message = HumanMessage(
+    content="write python code for fibonnaci series"
 )
+response = default_llm.invoke([message])
 
-# Task for the researcher
-research_task = Task(
-  description='Identify the next big trend in AI',
-  agent=researcher  # Assigning the task to the researcher
-)
-
-
-# Instantiate your crew
-tech_crew = Crew(
-  agents=[researcher],
-  tasks=[research_task],
-  process=Process.sequential  # Tasks will be executed one after the other
-)
-
-# Begin the task execution
-tech_crew.kickoff()
+print(response.content)
