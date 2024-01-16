@@ -66,7 +66,7 @@ load_dotenv()
 
 default_llm = AzureChatOpenAI(
     openai_api_version=os.environ.get("AZURE_OPENAI_VERSION", "2023-07-01-preview"),
-    azure_deployment=os.environ.get("AZURE_OPENAI_DEPLOYMENT", "chat"),
+    azure_deployment=os.environ.get("AZURE_OPENAI_DEPLOYMENT", "gpt4chat"),
     azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT", "https://gpt-4-trails.openai.azure.com/"),
     api_key=os.environ.get("AZURE_OPENAI_KEY")
 )
@@ -77,6 +77,7 @@ researcher = Agent(
   role='Senior Researcher',
   goal='Discover groundbreaking technologies',
   verbose=True,
+  llm=default_llm,
   backstory='A curious mind fascinated by cutting-edge innovation and the potential to change the world, you know everything about tech.'
 )
 
