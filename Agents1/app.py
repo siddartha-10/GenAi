@@ -55,14 +55,14 @@
 
 # **Production budget**: $25M
 # """
-import sys
-from crewai import Agent, Task
+# import sys
+# sys.path.append("/Users/siddartha/Library/Caches/pip/wheels/e8/c7/2e/c168cc751e6354c79651daa38fdb497101f965f463fde03871")  # Replace '/path/to/crewai' with the actual path
+
 import os
 from dotenv import load_dotenv
-from crewai import Crew, Process
+# # from crewai import Crew, Process
 from langchain_openai import AzureChatOpenAI
-from crewai.agent import Agent
-from crewai.tools.agent_tools import AgentTools
+from crewai import Agent, Task, Crew, Process
 from langchain_experimental.agents import create_pandas_dataframe_agent
 import pandas as pd
 from langchain.schema import HumanMessage
@@ -76,6 +76,8 @@ default_llm = AzureChatOpenAI(
     azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT", "https://gpt-4-trails.openai.azure.com/"),
     api_key=os.environ.get("AZURE_OPENAI_KEY")
 )
+
+
 
 message = HumanMessage(
     content="write python code for fibonnaci series"
