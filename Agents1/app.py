@@ -55,14 +55,14 @@
 
 # **Production budget**: $25M
 # """
-# import sys
-# sys.path.append("/Users/siddartha/Library/Caches/pip/wheels/e8/c7/2e/c168cc751e6354c79651daa38fdb497101f965f463fde03871")  # Replace '/path/to/crewai' with the actual path
-
+import sys
+from crewai import Agent, Task
 import os
 from dotenv import load_dotenv
-# # from crewai import Crew, Process
+from crewai import Crew, Process
 from langchain_openai import AzureChatOpenAI
-from crewai import Agent, Task, Crew, Process
+from crewai.agent import Agent
+from crewai.tools.agent_tools import AgentTools
 from langchain_experimental.agents import create_pandas_dataframe_agent
 import pandas as pd
 from langchain.schema import HumanMessage
@@ -77,131 +77,3 @@ default_llm = AzureChatOpenAI(
     api_key=os.environ.get("AZURE_OPENAI_KEY")
 )
 
-# message = HumanMessage(
-#     content="write python code for fibonnaci series"
-# )
-# response = default_llm.invoke([message])
-
-# print(response.content)
-import os
-from crewai import Agent, Task, Crew, Process
-
-# Install duckduckgo-search for this example:
-# !pip install -U duckduckgo-search
-
-from langchain_experimental.tools import PythonREPLTool
-tool = PythonREPLTool()
-from langchain.agents import load_tools
-human_tool = load_tools(["human"])
-
-team_lead = Agent(
-    role='Team Lead / Project Manager',
-    goal="""Ensure project success by checking what is the project that is need to be done,
-    timelines, tasks, and team coordination ask for the requirements and create a project plan.""",
-    backstory="""Experienced in project management, you talk the human see what are the requirements
-    you aim to align the team, set clear goals, and facilitate communication. 
-    Your role is crucial in achieving the project vision and maintaining cohesion.
-    for the project please use the tools and take inputs from the tools and create a project plan.
-    """,
-    verbose=True,
-    allow_delegation=False,
-    llm=default_llm,
-    tools=human_tool
-)
-
-frontend_dev = Agent(
-    role='Frontend Developer',
-    goal='Design and implement a user-friendly interface for optimal user experience',
-    backstory="""With expertise in frontend development, your focus is on creating an intuitive and visually appealing user interface. 
-    your final answer must be a full python code that can be run and tested.
-    """,
-    verbose=True,
-    allow_delegation=True,
-    llm=default_llm,
-    tools=[tool]
-)
-
-backend_dev = Agent(
-    role='Backend Developer',
-    goal='Develop server-side logic, manage databases, and create APIs for seamless communication',
-    backstory="""Specialized in backend development, your role is crucial in handling server-side logic, database management, 
-    and creating APIs to ensure smooth communication between frontend and server.
-    your final answer must be a full python code that can be run and tested.""",
-    verbose=True,
-    allow_delegation=True,
-    llm=default_llm,
-    tools=[tool]
-)
-
-qa_engineer = Agent(
-    role='Quality Assurance (QA) Engineer',
-    goal='Ensure software quality through rigorous testing and collaboration with developers',
-    backstory="""As a QA Engineer, your responsibility is to conduct thorough testing, identify and report bugs, 
-    and collaborate with developers to address issues promptly. Your focus is on ensuring software reliability.
-    your final answer must be a full python code that can be run and tested.""",
-    verbose=True,
-    allow_delegation=True,
-    llm=default_llm,
-    tools=[tool]
-)
-
-
-tech_writer = Agent(
-    role='Technical Writer',
-    goal='Create comprehensive project documentation, including user manuals and technical specifications',
-    backstory="""As a Technical Writer, your focus is on creating clear and accessible project documentation. 
-    You play a crucial role in ensuring that internal development teams and external users have comprehensive documentation.
-    your final answer must be a full markdown file that can be read""",
-    verbose=True,
-    allow_delegation=True,
-    llm=default_llm,
-    tools=[tool]
-)
-
-# Create tasks for your agents
-task_team_lead = Task(
-    description="""As the Team Lead, outline project goals, establish timelines, and ensure alignment within the team. 
-    Coordinate tasks, manage resources, and facilitate effective communication between team members and stakeholders.""",
-    agent=team_lead
-)
-
-task_frontend_dev = Task(
-    description="""Frontend Developer: Design and implement a user-friendly interface, ensuring an optimal user experience. 
-    Your Final answer must be the full python code, only the python code and nothing else.""",
-    agent=frontend_dev
-)
-
-task_backend_dev = Task(
-    description="""Backend Developer: Develop server-side logic, manage databases, and create APIs for seamless communication between frontend and server. 
-    Optimize system performance and scalability.
-    Your Final answer must be the full python code, only the python code and nothing else.""",
-    agent=backend_dev
-)
-
-task_qa_engineer = Task(
-    description="""QA Engineer: Conduct rigorous testing to ensure the quality and reliability of the software. 
-    Identify and report bugs, work closely with developers to address issues promptly, and contribute to continuous improvement of testing processes.
-    Your Final answer must be the full python code, only the python code and nothing else.""",
-    agent=qa_engineer
-)
-
-
-task_tech_writer = Task(
-    description="""Technical Writer: Create comprehensive project documentation, including user manuals, API documentation, and technical specifications. 
-    Ensure clear and accessible documentation for both internal development teams and external users.
-    your final answer must be a full markdown file that can be read""",
-    agent=tech_writer
-)
-
-# Instantiate your crew with a sequential process
-crew = Crew(
-    agents=[team_lead, frontend_dev, backend_dev, qa_engineer, tech_writer],
-    tasks=[task_team_lead, task_frontend_dev, task_backend_dev, task_qa_engineer, task_tech_writer],
-    verbose=2,  # You can set it to 1 or 2 for different logging levels
-)
-
-# Get your crew to work!
-result = crew.kickoff()
-
-print("######################")
-print(result)
